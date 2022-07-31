@@ -80,6 +80,108 @@ Write-Host "Set wallpaper to darkmode appropriate" -BackgroundColor Black -Foreg
 reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" /V "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" /T REG_SZ /D "0" /F | Out-Null
 
 
+#
+# Restore right click context menu 
+#
+reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
+
+
+reg.exe add "HKCU\Software\Policies\Microsoft\Windows\Explorer\" /V "HideRecommendedSection" /T REG_DWORD /D "1" /F | Out-Null
+
+
+
+:: ------------------Kill OneDrive process-------------------
+echo --- Kill OneDrive process
+taskkill /f /im OneDrive.exe
+
+
+:: --------------------Uninstall OneDrive--------------------
+%SystemRoot%\System32\OneDriveSetup.exe /uninstall 2>nul
+
+
+
+
+:: ----------------Remove OneDrive leftovers-----------------
+echo --- Remove OneDrive leftovers
+rd "%UserProfile%\OneDrive" /q /s
+rd "%LocalAppData%\Microsoft\OneDrive" /q /s
+rd "%ProgramData%\Microsoft OneDrive" /q /s
+rd "%SystemDrive%\OneDriveTemp" /q /s
+
+
+:: ----------------Delete OneDrive shortcuts-----------------
+del "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Microsoft OneDrive.lnk" /s /f /q
+del "%APPDATA%\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" /s /f /q
+del "%USERPROFILE%\Links\OneDrive.lnk" /s /f /q
+
+
+:: ----------------Disable usage of OneDrive-----------------
+echo --- Disable usage of OneDrive
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSyncNGSC" /d 1 /f
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSync" /d 1 /f
+
+
+:: ---Prevent automatic OneDrive install for current user----
+echo --- Prevent automatic OneDrive install for current user
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+
+
+:: -----Prevent automatic OneDrive install for new users-----
+reg load "HKU\Default" "%SystemDrive%\Users\Default\NTUSER.DAT" 
+reg delete "HKU\Default\software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+reg unload "HKU\Default"
+
+
+:: ------------Remove OneDrive from explorer menu------------
+reg delete "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
+reg delete "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
+reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /d "0" /t REG_DWORD /f
+reg add "HKCR\Wow6432Node\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /d "0" /t REG_DWORD /f
+
+:: ------------Delete OneDrive path from registry------------
+reg delete "HKCU\Environment" /v "OneDrive" /f
+
+#
+# Don't show recently used files in quick access 
+#
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t "REG_DWORD" /f
+reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
+
+#
+# Don't keep history of recently opened documents
+#
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
+
+# Remove Windows bloatware
+Get-AppxPackage 'Microsoft.549981C3F5F10' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.XboxIdentityProvider' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.XboxIdentityProvider' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.XboxIdentityProvider' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.OneDriveSync' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.XboxGamingOverlay' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.WindowsAlarms' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.ZuneVideo' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.ZuneMusic' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.YourPhone' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.XboxSpeechToTextOverlay' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.Xbox.TCUI' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.WindowsSoundRecorder' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.WindowsMaps' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.WindowsFeedbackHub' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.Todos' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.PowerAutomateDesktop' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.People' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.MicrosoftStickyNotes' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.MicrosoftSolitaireCollection' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.MicrosoftOfficeHub' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.GetHelp' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.BingWeather' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.BingNews' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.ScreenSketch' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.XboxGameOverlay' | Remove-AppxPackage
+Get-AppxPackage 'MicrosoftTeams' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.Windows.Photos' | Remove-AppxPackage
+Get-AppxPackage 'Microsoft.GamingApp'| Remove-AppxPackage
 
 #
 # Restart Explorer
