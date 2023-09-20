@@ -1,5 +1,4 @@
-# post-install-scripts
-# Windows Customization Script
+# Windows 11 Pro - Post installation cleanup script
 
 This script provides various customizations to a Windows environment, including setting timezone, taskbar customization, disabling UAC prompts, uninstalling bloatware, and more. Use it to quickly configure a Windows installation to your preferred settings.
 
