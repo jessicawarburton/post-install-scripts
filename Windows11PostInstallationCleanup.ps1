@@ -144,7 +144,6 @@ Get-AppxPackage 'Microsoft.MicrosoftOfficeHub' | Remove-AppxPackage
 Get-AppxPackage 'Microsoft.GetHelp' | Remove-AppxPackage
 Get-AppxPackage 'Microsoft.BingWeather' | Remove-AppxPackage
 Get-AppxPackage 'Microsoft.BingNews' | Remove-AppxPackage
-Get-AppxPackage 'Microsoft.ScreenSketch' | Remove-AppxPackage
 Get-AppxPackage 'Microsoft.XboxGameOverlay' | Remove-AppxPackage
 Get-AppxPackage 'MicrosoftTeams' | Remove-AppxPackage
 Get-AppxPackage 'Microsoft.Windows.Photos' | Remove-AppxPackage
